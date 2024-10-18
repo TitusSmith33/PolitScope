@@ -1,0 +1,13 @@
+cff-version: 1.0.0
+message: "If you intend on using PolitScope, please cite it using the following details."
+title: "PolitScope"
+version: "1.0.0"
+authors:
+  - family-names: "Smith"
+    given-names: "Titus"
+    orcid: ""
+date-released: "2024-10-18"
+repository-code: "https://github.com/TitusSmith33/PolitScope"
+doi: ""
+preferred-citation: ""
+license: " GPL-3.0 License"
