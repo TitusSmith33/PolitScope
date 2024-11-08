@@ -26,3 +26,21 @@ Graph about social media per age:
 
 Pew Research about politics on social media:
 <https://www.pewresearch.org/internet/2024/06/12/how-americans-navigate-politics-on-tiktok-x-facebook-and-instagram/>
+
+## Unsupervised Learning
+
+- K-means clusters/Hierarchical clusters/ DBSCAN
+<https://www.ibm.com/topics/unsupervised-learning>
+
+- Examples of unsupervised learning
+<https://www.altexsoft.com/blog/unsupervised-machine-learning/>
+- Text embedding: word2vec, GloVe, FastText
+
+## BERT
+
+- what is Bert (lot of good information about BERT including examples)
+<https://h2o.ai/wiki/bert/>
+
+- RoBERTa information (updated, newer, better version of BERT)
+<https://huggingface.co/docs/transformers/en/model_doc/roberta>
+
