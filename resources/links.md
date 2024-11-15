@@ -1,5 +1,9 @@
 # Important Research/ Development Links
 
+## API
+
+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
+
 ## Chrome Extension Links
 
 How to create a basic chrome extension tutorial:
