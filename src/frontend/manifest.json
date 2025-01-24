@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "PolitScope",
+  "version": "0.2.0",
+  "description": "A Chrome extension designed to detect and flag potential politcal bias undertones!",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["scripting", "activeTab", "storage"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
