@@ -11,6 +11,7 @@ def tokenize_and_clean(data: Dict[str, Any]) -> Dict[str, Any]:
 
     # using RoBERTa, initialize a tokenizer
     # reference: <https://huggingface.co/docs/transformers/en/model_doc/auto>
+    # use_fast: utilized Rust implementation for processing large data faster
     tokenizer = AutoTokenizer.from_pretrained("roberta-base", use_fast=True)
     # splits the input text into smaller units (tokens)
     # offset mapping ensures we have the original start/end location of tokens
@@ -19,7 +20,8 @@ def tokenize_and_clean(data: Dict[str, Any]) -> Dict[str, Any]:
     # each token is decoded into its text representation, and its position in the original text is stored
     token_data = []
     for token, (start, end) in zip(tokens["input_ids"], tokens["offset_mapping"]):
-        token_text = tokenizer.decode([token]).strip()  # Decode token back to text
+        # decode token back to text
+        token_text = tokenizer.decode([token]).strip()
         token_data.append({"token": token_text, "start": start, "end": end})
 
     # clean tokens (remove stop words, lowercasing, and remove punctuation)
