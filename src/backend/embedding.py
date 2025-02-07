@@ -9,12 +9,12 @@ def generate_embeddings(data: Dict[str, Any]) -> Dict[str, Any]:
     """ Generate word embeddings for tokens."""
     # error handling
     # expected data format from text_processor.py
-    if "tokens" not in data or "original_text" not in data:
-        raise ValueError("Input dictionary must contain 'original_text' and 'tokens' keys.")
+    if "sentences" not in data or "original_text" not in data:
+        raise ValueError("Input dictionary must contain 'original_text' and 'sentences' keys.")
     
     # initialize variables, splitting the key and data
-    original_text: str = data["original_text"]
-    tokens: List[Dict[str, Any]] = data["tokens"]
+    original_text = data["original_text"]
+    sentences = data["sentences"]
     
     # load the pre-trained RoBERTa model and tokenizer
     # reference: <https://pypi.org/project/transformers/>
@@ -23,17 +23,19 @@ def generate_embeddings(data: Dict[str, Any]) -> Dict[str, Any]:
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     model = AutoModel.from_pretrained(model_name)
     
+
+    encoded_inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
     # Extract token texts and encode them for the model
     # initialize empty list
-    token_texts = []
+    #token_texts = []
     # extract the token text(s)
-    for token_dict in tokens:
-        token_texts.append(token_dict["token"])
+    #for token_dict in tokens:
+    #    token_texts.append(token_dict["token"])
     # use the pre-trained RoBERTa tokenizer to encode the list of token strings
     # padding: padded to the same length so that they can be processed in batches
     # truncation: shortens tokenized sequences that exceed the model's maximum length
     # return_tensors: return the results as PyTorch tensors to be used directly in model
-    encoded_inputs = tokenizer(token_texts, padding=True, truncation=True, return_tensors="pt")
+    # encoded_inputs = tokenizer(token_texts, padding=True, truncation=True, return_tensors="pt")
     
     # disables gradient calculation to save memory
     # feed the tokenized input into the model to generate outputs
@@ -53,12 +55,21 @@ def generate_embeddings(data: Dict[str, Any]) -> Dict[str, Any]:
     
     # loop over each token, its corresponding embedding, and confidence score
     # and update the token dictionary with these values
-    for token, embedding, conf_score in zip(tokens, embeddings_list, entropy):
+    #for token, embedding, conf_score in zip(tokens, embeddings_list, entropy):
         # add the embedding vector to the token dictionary
-        token["embedding"] = embedding
+    #    token["embedding"] = embedding
         # add the confidence score to the token dictionary
-        token["confidence_score"] = conf_score
+    #    token["confidence_score"] = conf_score
+    
+    # Create structured output
+    sentence_data = []
+    for sentence, embedding, conf_score in zip(sentences, embeddings_list, entropy):
+        sentence_data.append({
+            "sentence": sentence,
+            "embedding": embedding,
+            "confidence_score": conf_score
+        })
     
     # return the dictionary containing the original text 
     # and the processed tokens with their embeddings and confidence scores
-    return {"original_text": original_text, "tokens": tokens}
+    return {"original_text": original_text, "sentences": sentence_data}
