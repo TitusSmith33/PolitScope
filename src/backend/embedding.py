@@ -49,7 +49,7 @@ def generate_embeddings(data: Dict[str, Any]) -> Dict[str, Any]:
     # calculate the entropy for each sequence of embeddings to measure the confidence of the predictions
     # reference: <https://pytorch.org/docs/stable/nn.functional.html>
     probs = tnnf.softmax(embeddings, dim=1)
-    entropy = -torch.sum(probs * torch.log(probs + 1e-10), dim=1).tolist()
+    entropy = torch.sum(probs * torch.log(probs + 1e-10), dim=1).tolist()
     
     # loop over each token, its corresponding embedding, and confidence score
     # and update the token dictionary with these values
