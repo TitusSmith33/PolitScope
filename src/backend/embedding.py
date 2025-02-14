@@ -1,12 +1,12 @@
 """Generate word embeddings using RoBERTa with confidence scoring."""
 
-from typing import Dict, Any, List
+from typing import Dict, Any
 import torch
 import torch.nn.functional as tnnf
 from transformers import AutoModel, AutoTokenizer
 
 def generate_embeddings(data: Dict[str, Any]) -> Dict[str, Any]:
-    """ Generate word embeddings for tokens."""
+    """Generate word embeddings for tokens."""
     # error handling
     # expected data format from text_processor.py
     if "sentences" not in data or "original_text" not in data:
