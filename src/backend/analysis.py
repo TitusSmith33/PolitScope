@@ -2,6 +2,7 @@
 
 from typing import Dict, Any
 import numpy as np
+import pickle
 from sklearn.cluster import KMeans
 
 def analyze_embeddings(data: Dict[str, Any], k: int) -> Dict[str, Any]:
@@ -11,6 +12,7 @@ def analyze_embeddings(data: Dict[str, Any], k: int) -> Dict[str, Any]:
     
     sentences = data["sentences"]
     embeddings = np.array([s["embedding"] for s in sentences])
+    print("clustering step")
     
     # apply K-Means clustering from sci-kit learn
     # n_clusters: amount of clusters needed -- may change this for experiments (3 or dynamic)
@@ -24,11 +26,15 @@ def analyze_embeddings(data: Dict[str, Any], k: int) -> Dict[str, Any]:
     clustered_sentences = {i: [] for i in range(k)}
     for sentence, cluster in zip(sentences, clusters):
         clustered_sentences[cluster].append(sentence["sentence"])
+
+    # Save the trained model
+    with open("kmeans_model.pkl", "wb") as f:
+        pickle.dump(kmeans, f)
     
     # Print sentences for manual analysis
     for cluster_id, cluster_sentences in clustered_sentences.items():
         print(f"\nCluster {cluster_id}:")
-        for sentence in cluster_sentences:
+        for sentence in cluster_sentences[:20]:
             print(f" - {sentence}")
     
     return {"original_text": data["original_text"], "sentences": sentences}
