@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>PolitScope</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        margin: 0;
-        padding: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>PolitScope</h1>
-    <input type="text" id="wordInput" placeholder="Enter word" />
-    <button id="highlightBtn">Highlight</button>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolitScope Bias Report</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <p id="nlp-notice" style="font-size: 12px; color: gray; cursor: pointer; text-decoration: underline; text-align: center; margin-bottom: 10px;">
+        This tool uses NLP techniques to detect bias. It may make mistakes, so verify results and conduct further research.
+    </p>
+
+    <h2>Biased Sentences</h2>
+    <ul id="bias-list"></ul>
+
     <script src="popup.js"></script>
-  </body>
+</body>
 </html>

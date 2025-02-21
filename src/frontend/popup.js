@@ -1,22 +1,26 @@
-document.getElementById('highlightBtn').addEventListener('click', function() {
-  const word = document.getElementById('wordInput').value.trim();
-  if (word) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-      chrome.scripting.executeScript({
-        target: { tabId: tabs[0].id },
-        func: highlightWord,
-        args: [word]
-      });
-    });
-  }
+document.addEventListener("DOMContentLoaded", function() {
+  chrome.storage.local.get("biasedSentences", (data) => {
+      const biasList = document.getElementById("bias-list");
+
+      if (data.biasedSentences && data.biasedSentences.length > 0) {
+          data.biasedSentences.forEach(sentence => {
+              let listItem = document.createElement("li");
+              listItem.textContent = sentence;
+              listItem.addEventListener("click", () => scrollToSentence(sentence));
+              biasList.appendChild(listItem);
+          });
+      } else {
+          biasList.innerHTML = "<li>No biased content detected.</li>";
+      }
+  });
 });
 
-function highlightWord(word) {
-  if (word.length === 0) return;
-
-  const regex = new RegExp(`(${word})`, 'gi');
-  document.body.innerHTML = document.body.innerHTML.replace(
-    regex,
-    `<mark>$1</mark>`
-  );
+function scrollToSentence(sentence) {
+  let elements = document.getElementsByClassName("highlight-bias");
+  for (let el of elements) {
+      if (el.innerText === sentence) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          break;
+      }
+  }
 }
