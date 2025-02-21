@@ -48,3 +48,17 @@ Pew Research about politics on social media:
 - RoBERTa information (updated, newer, better version of BERT)
 <https://huggingface.co/docs/transformers/en/model_doc/roberta>
 
+data and linguistics in RoBerta
+https://arxiv.org/abs/2010.05358
+
+## Data Collection and Preprocessing for Machine Learning
+
+Focus of this theme: Research studies on methods of acquiring and cleaning datasets for machine learning tasks, particularly in the political domain. This is one that I anticipate I am going to need more sources and information on, but this section will highlight why we chose to take what data based on previous research standards/ what worked.
+Influence on project: Helps address the trade-offs between web scraping and pre-selected datasets and highlights some of the ethical considerations in data collection. I could also imagine how the question about how to get data when pre-selected and human labeled data is inherently bias, so addressing that concern.
+
+## Evaluation and Validation of Bias Detection Tools
+
+Focus for theme: Studies assessing the accuracy, usability, and ethical concerns of creating a bias detection tools. Additionally, looking at what research has been done to identify themes in bias. What causes bias in general, and are there themes that exists? Do those exist in other fields? Political Science? How does political bias detection differ from other forms of general bias detection.
+Influence on project: Informs how to benchmark PolitScope against competitors and address gaps in existing tools. Also introduces a large section of the second part of PolitScope, which is the evaluation and research questions associated to how bias is detected and what builds bias, are there patterns that arise?
+
+https://epjdatascience.springeropen.com/articles/10.1140/epjds/s13688-023-00386-6
