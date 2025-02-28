@@ -4,7 +4,14 @@ function getPageText() {
 }
 
 // Send text to background script
+function sendTextToBackground() {
+    const text = getPageText();
+    const data = { content: text }; // Format as JSON
 
+    chrome.runtime.sendMessage({ action: "saveText", data });
+}
+
+sendTextToBackground();
 
 // Highlight biased sentences
 function highlightBiasedText(biasedSentences) {

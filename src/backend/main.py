@@ -22,7 +22,7 @@ def load_and_combine_text(csv_file: str) -> Dict[str, Any]:
 #data ={"content": "Trump is my favorite president, and I really like that he won the election. this is a normal sentence with no impact. I am adding random sentences. this is just an example sentence. politcal bias lives all around us and Trump is crazy #biden2028. I think democrats are the smartest voters in the country. I think republicans and people that vote for trump are the smartest voters in the world."}
 
 def main():
-    csv_file = "../../data/PolitScope_Data.csv"  # Update with your actual CSV file path
+    csv_file = "../../data/PolitScope_Data.csv"
     print(csv_file)
     raw_text = load_and_combine_text(csv_file)
     # print(raw_text)
