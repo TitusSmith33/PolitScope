@@ -24,24 +24,13 @@ def generate_embeddings(data: Dict[str, Any]) -> Dict[str, Any]:
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     model = AutoModel.from_pretrained(model_name)
     
+    # batching to handle the memory errors encountered
+    # handle chunks of the data at a time rather than feeding the whole thing at once
     batch_size = 64
     sentence_data = []
     for i in range(0, len(sentences), batch_size):
         batch = sentences[i:i + batch_size]
         encoded_inputs = tokenizer(batch, padding=True, truncation=True, return_tensors="pt")
-    #### encoded_inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
-    # Extract token texts and encode them for the model
-    # initialize empty list
-    #token_texts = []
-    # extract the token text(s)
-    #for token_dict in tokens:
-    #    token_texts.append(token_dict["token"])
-    # use the pre-trained RoBERTa tokenizer to encode the list of token strings
-    # padding: padded to the same length so that they can be processed in batches
-    # truncation: shortens tokenized sequences that exceed the model's maximum length
-    # return_tensors: return the results as PyTorch tensors to be used directly in model
-    # encoded_inputs = tokenizer(token_texts, padding=True, truncation=True, return_tensors="pt")
-    
     # disables gradient calculation to save memory
     # feed the tokenized input into the model to generate outputs
         with torch.no_grad():
@@ -58,16 +47,7 @@ def generate_embeddings(data: Dict[str, Any]) -> Dict[str, Any]:
         probs = tnnf.softmax(embeddings, dim=1)
         entropy = torch.sum(probs * torch.log(probs + 1e-10), dim=1).tolist()
     
-    # loop over each token, its corresponding embedding, and confidence score
-    # and update the token dictionary with these values
-    #for token, embedding, conf_score in zip(tokens, embeddings_list, entropy):
-        # add the embedding vector to the token dictionary
-    #    token["embedding"] = embedding
-        # add the confidence score to the token dictionary
-    #    token["confidence_score"] = conf_score
-    
-    # Create structured output
-    #### sentence_data = []
+    # Create the structured output
         for sentence, embedding, conf_score in zip(batch, embeddings_list, entropy):
             sentence_data.append({
                 "sentence": sentence,
