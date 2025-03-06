@@ -1,18 +1,19 @@
-"""Analyze sentence embeddings using K-Means clustering."""
+"""Analyze sentence embeddings using K-Means clustering and save model for analysis use."""
 
 from typing import Dict, Any
 import numpy as np
 import pickle
 from sklearn.cluster import KMeans
 
-def analyze_embeddings(data: Dict[str, Any], k: int) -> Dict[str, Any]:
-    """Cluster sentence embeddings using K-Means."""
+def analyze_embeddings(data: Dict[str, Any], k: int) -> None:
+    """Cluster sentence embeddings using K-Means and save the model."""
     if "sentences" not in data:
         raise ValueError("Input dictionary must contain 'sentences' key.")
     
     sentences = data["sentences"]
     embeddings = np.array([s["embedding"] for s in sentences])
-    print("clustering step")
+    print()
+    print("Clustering step...")
     
     # apply K-Means clustering from sci-kit learn
     # n_clusters: amount of clusters needed -- may change this for experiments (3 or dynamic)
@@ -27,14 +28,19 @@ def analyze_embeddings(data: Dict[str, Any], k: int) -> Dict[str, Any]:
     for sentence, cluster in zip(sentences, clusters):
         clustered_sentences[cluster].append(sentence["sentence"])
 
-    # Save the trained model
+    # store model information including the cluster centers for distance comparison
+    model_data = {
+        "kmeans": kmeans,
+        "cluster_centers": kmeans.cluster_centers_,
+        "training_sentences": sentences
+    }
+
+    # Save the model with all the information needed
     with open("kmeans_model.pkl", "wb") as f:
-        pickle.dump(kmeans, f)
+        pickle.dump(model_data, f)
     
     # Print sentences for manual analysis
     for cluster_id, cluster_sentences in clustered_sentences.items():
         print(f"\nCluster {cluster_id}:")
-        for sentence in cluster_sentences[:20]:
+        for sentence in cluster_sentences[:10]:
             print(f" - {sentence}")
-    
-    return {"original_text": data["original_text"], "sentences": sentences}
