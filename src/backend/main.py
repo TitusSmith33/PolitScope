@@ -20,12 +20,12 @@ def load_and_combine_text(csv_file: str) -> Dict[str, Any]:
     return {"content": combined_text}
 
 
-#data ={"content": "Trump is my favorite president, and I really like that he won the election. this is a normal sentence with no impact. I am adding random sentences. this is just an example sentence. politcal bias lives all around us and Trump is crazy #biden2028. I think democrats are the smartest voters in the country. I think republicans and people that vote for trump are the smartest voters in the world."}
+data ={"content": "Trump is my favorite president, and I really like that he won the election. this is a normal sentence with no impact. I am adding random sentences. this is just an example sentence. politcal bias lives all around us and Trump is crazy #biden2028. I think democrats are the smartest voters in the country. I think republicans and people that vote for trump are the smartest voters in the world."}
 
 def main():
-    csv_file = "../../data/PolitScope_Data.csv"
+    # csv_file = "../../data/PolitScope_Data.csv"
     # print(csv_file)
-    raw_text = load_and_combine_text(csv_file)
+    # raw_text = load_and_combine_text(csv_file)
     # print(raw_text)
     # print("Welcome to PolitScope! Enter a sentence to analyze its political bias.")
     
@@ -36,16 +36,17 @@ def main():
     #        break
     
     #raw_text = {"content": user_input}
+    raw_text = data
     clean_data = preprocess_text(raw_text)
     # print(clean_data)
     example_output = generate_embeddings(clean_data)
     #print(example_output)
     #print(type(example_output))
     # print("embedding complete")
-    num_clusters = 2
-    analyze_embeddings(example_output, num_clusters)
+    # num_clusters = 2
+    # analyze_embeddings(example_output, num_clusters)
     # print("1")
-    # compare_clusters(example_output)
+    compare_clusters(example_output)
 
 
 

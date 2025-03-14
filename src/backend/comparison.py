@@ -9,7 +9,7 @@ CONFIDENCE_THRESHOLD = 0.85
 DISTANCE_WEIGHT = 0.7  
 ENTROPY_WEIGHT = 0.3 
 
-def compare_clusters(data: Dict[str, Any]) -> Dict[str, Any]:
+def compare_clusters(data: Dict[str, Any]) -> None:
     """Compare new embeddings to the clusters in model."""
     # error handling
     if "sentences" not in data:
@@ -22,10 +22,9 @@ def compare_clusters(data: Dict[str, Any]) -> Dict[str, Any]:
     # grab specific aspects of the model
     print(f"DEBUG: Type of kmeans: {type(model_data)}")
     print()
-    print("loaded model:", model_data)
-    print()
     print("DEBUG: Loaded model_data keys:", model_data.keys())
     kmeans = model_data["kmeans"]
+    print(type(kmeans))
     cluster_centers = model_data["cluster_centers"]
 
     # grab specific aspects of the new inputted text embeddings
