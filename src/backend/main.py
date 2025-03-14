@@ -1,6 +1,7 @@
 from embedding import generate_embeddings
 from text_processor import preprocess_text
 from analysis import analyze_embeddings
+from comparison import compare_clusters
 from typing import Any, Dict
 import pandas as pd
 
@@ -23,18 +24,29 @@ def load_and_combine_text(csv_file: str) -> Dict[str, Any]:
 
 def main():
     csv_file = "../../data/PolitScope_Data.csv"
-    print(csv_file)
+    # print(csv_file)
     raw_text = load_and_combine_text(csv_file)
     # print(raw_text)
+    # print("Welcome to PolitScope! Enter a sentence to analyze its political bias.")
+    
+    # while True:
+    #    user_input = input("\nEnter text (or type 'exit' to quit): ").strip()
+    #    if user_input.lower() == "exit":
+    #        print("Exiting PolitScope.")
+    #        break
+    
+    #raw_text = {"content": user_input}
     clean_data = preprocess_text(raw_text)
-    print(clean_data)
+    # print(clean_data)
     example_output = generate_embeddings(clean_data)
     #print(example_output)
     #print(type(example_output))
-    print("embedding complete")
-    num_clusters = 20
+    # print("embedding complete")
+    num_clusters = 2
     analyze_embeddings(example_output, num_clusters)
-    print("1")
+    # print("1")
+    # compare_clusters(example_output)
+
 
 
 main()

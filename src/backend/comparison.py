@@ -20,6 +20,11 @@ def compare_clusters(data: Dict[str, Any]) -> Dict[str, Any]:
         model_data = pickle.load(f)
 
     # grab specific aspects of the model
+    print(f"DEBUG: Type of kmeans: {type(model_data)}")
+    print()
+    print("loaded model:", model_data)
+    print()
+    print("DEBUG: Loaded model_data keys:", model_data.keys())
     kmeans = model_data["kmeans"]
     cluster_centers = model_data["cluster_centers"]
 
@@ -34,8 +39,8 @@ def compare_clusters(data: Dict[str, Any]) -> Dict[str, Any]:
     closest_clusters = np.argmin(distances, axis=1)
     min_distances = np.min(distances, axis=1)
 
-    clustered_sentences = {i: [] for i in range(len(cluster_centers))}
-    bias_classification = {}
+    # clustered_sentences = {i: [] for i in range(len(cluster_centers))}
+    # bias_classification = {}
 
     # use this formula to calculate confidence in clusters
     # confidence=0.7×(1−normalized distance)+0.3×(1−entropy score)
