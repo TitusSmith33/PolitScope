@@ -1,26 +1,26 @@
-document.addEventListener("DOMContentLoaded", function() {
-  chrome.storage.local.get("biasedSentences", (data) => {
-      const biasList = document.getElementById("bias-list");
+document.addEventListener("DOMContentLoaded", async function () {
+    const biasList = document.getElementById("biasList");
 
-      if (data.biasedSentences && data.biasedSentences.length > 0) {
-          data.biasedSentences.forEach(sentence => {
-              let listItem = document.createElement("li");
-              listItem.textContent = sentence;
-              listItem.addEventListener("click", () => scrollToSentence(sentence));
-              biasList.appendChild(listItem);
-          });
-      } else {
-          biasList.innerHTML = "<li>No biased content detected.</li>";
-      }
-  });
+    chrome.storage.local.get("biasSentences", function (data) {
+        if (data.biasSentences && data.biasSentences.length > 0) {
+            data.biasSentences.forEach(sentence => {
+                const li = document.createElement("li");
+                li.textContent = sentence;
+                li.onclick = () => scrollToSentence(sentence);
+                biasList.appendChild(li);
+            });
+        } else {
+            biasList.innerHTML = "<li>No biased sentences detected.</li>";
+        }
+    });
 });
 
 function scrollToSentence(sentence) {
-  let elements = document.getElementsByClassName("highlight-bias");
-  for (let el of elements) {
-      if (el.innerText === sentence) {
-          el.scrollIntoView({ behavior: "smooth", block: "center" });
-          break;
-      }
-  }
+    let found = false;
+    document.querySelectorAll("p, span, div").forEach(el => {
+        if (!found && el.innerText.includes(sentence)) {
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+            found = true;
+        }
+    });
 }
