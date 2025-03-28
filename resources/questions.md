@@ -19,4 +19,8 @@ why look at the whole group when calculating confidence (consider what happens w
 
 measure success-- how to measure bias without the impact of personal bias -- accuracy of model prediction
 
+TODO:
+
 if we just use the distances from the original sentence, are we really testing PolitScope or are we testing RoBERTa?
+
+for the constants on the confidence level experiment -- how do we measure accuracy??
