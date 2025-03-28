@@ -61,4 +61,4 @@ def analyze_text(data: TextInput) -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=str(e))
     
 
-main()
+# main()

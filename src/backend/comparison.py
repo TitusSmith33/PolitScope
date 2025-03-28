@@ -44,7 +44,7 @@ def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
     biased_sentences = []
 
     # use this formula to calculate confidence in clusters
-    # confidence=0.7×(1−normalized distance)+0.3×(1−entropy score)
+    # confidence=0.7×(1−normalized distance)+0.3×(1− normalized entropy score)
     for i, sentence in enumerate(sentences):
         cluster = closest_clusters[i]
         distance_score = 1 - (min_distances[i] / np.max(min_distances))
