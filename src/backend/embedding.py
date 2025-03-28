@@ -18,7 +18,7 @@ def generate_embeddings(data: Dict[str, Any]) -> Dict[str, Any]:
     
     # load the pre-trained RoBERTa model and tokenizer
     # reference: <https://pypi.org/project/transformers/>
-    print("embedding step")
+    print("Embedding step...\n")
     model_name = "roberta-base"
     # use_fast: utilized Rust implementation for processing large data faster
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
