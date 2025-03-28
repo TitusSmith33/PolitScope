@@ -46,5 +46,6 @@ def word_experiment():
 
     return distances
 
+
 results = word_experiment()
 print(results)
