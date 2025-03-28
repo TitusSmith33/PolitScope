@@ -41,9 +41,6 @@ def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
     print("min_distance")
     print(min_distances)
 
-    # clustered_sentences = {i: [] for i in range(len(cluster_centers))}
-    # bias_classification = {}
-
     biased_sentences = []
 
     # use this formula to calculate confidence in clusters
@@ -51,9 +48,12 @@ def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
     for i, sentence in enumerate(sentences):
         cluster = closest_clusters[i]
         distance_score = 1 - (min_distances[i] / np.max(min_distances))
-        entropy_score = 1 - (entropies[i] / np.max(entropies))
+        # normalize the entropy score from range (-1, 1) to (0, 1)
+        # -1 -> 0
+        # 1 -> 1
+        normalized_entropy = (entropies[i] + 1) / 2
 
-        confidence_score = (DISTANCE_WEIGHT * distance_score) + (ENTROPY_WEIGHT * entropy_score)
+        confidence_score = (DISTANCE_WEIGHT * distance_score) + (ENTROPY_WEIGHT * (1 - normalized_entropy))
         is_confident = confidence_score >= CONFIDENCE_THRESHOLD
 
         if cluster == 1 and is_confident:
@@ -61,7 +61,7 @@ def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
 
         print(f"\nSentence: {sentence['sentence']}")
         print(f"  → Assigned to Cluster {cluster}")
-        print(f"  → Distance Score: {distance_score:.2f}, Entropy Score: {entropy_score:.2f}")
+        print(f"  → Distance Score: {distance_score:.2f}, Entropy Score: {normalized_entropy:.2f}")
         print(f"  → Confidence Score: {confidence_score:.2f} ({'CONFIDENT' if is_confident else 'LOW CONFIDENCE'})")
 
         return {"biased_content": biased_sentences}

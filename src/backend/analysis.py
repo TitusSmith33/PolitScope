@@ -8,6 +8,7 @@ from sklearn.cluster import KMeans
 
 def analyze_embeddings(data: Dict[str, Any], k: int) -> None:
     """Cluster sentence embeddings using K-Means and save the model."""
+    # expected input structure
     if "sentences" not in data:
         raise ValueError("Input dictionary must contain 'sentences' key.")
     
@@ -23,9 +24,8 @@ def analyze_embeddings(data: Dict[str, Any], k: int) -> None:
     kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
     # assign each embedding to a cluster
     clusters = kmeans.fit_predict(embeddings)
-
-    print(kmeans.labels_)  # Shows which cluster each sentence was assigned
-
+    # Shows which cluster each sentence was assigned
+    print(kmeans.labels_)
     
     # Group sentences by cluster
     clustered_sentences = {i: [] for i in range(k)}
@@ -39,29 +39,27 @@ def analyze_embeddings(data: Dict[str, Any], k: int) -> None:
         "training_sentences": sentences
     }
 
-    #print(model_data)
-    #print("DEBUG: Final model_data before saving:", model_data)
-    #print("DEBUG: Type of model_data:", type(model_data))
-    #print("DEBUG: model_data keys:", model_data.keys() if isinstance(model_data, dict) else "N/A")
-
     # Save the model with all the information needed
     with open("kmeans_model.pkl", "wb") as f:
         pickle.dump(model_data, f)
 
+    # save only necessary attributes
+    # convert NumPy array to list
     model_data_serializable = {
-    "kmeans": {"n_clusters": model_data["kmeans"].n_clusters,  # Save only necessary attributes
+    "kmeans": {"n_clusters": model_data["kmeans"].n_clusters,
                "random_state": model_data["kmeans"].random_state},
-    "cluster_centers": model_data["cluster_centers"].tolist(),  # Convert NumPy array to list
-    "training_sentences": model_data["training_sentences"]  # Already a list of dicts
+    "cluster_centers": model_data["cluster_centers"].tolist(),
+    "training_sentences": model_data["training_sentences"]
 }
     
+    # debugging json -- human readable version of pckl model
     with open("debug_model_output.json", "w") as f:
         json.dump(model_data_serializable, f, indent=4)
     print("DEBUG: Model data saved to debug_model_output.json")
     
     print("DEBUG: Saved model_data keys:", model_data.keys()) 
     
-    # Print sentences for manual analysis
+    # print sentences for manual analysis of cluster results
     for cluster_id, cluster_sentences in clustered_sentences.items():
         print(f"\nCluster {cluster_id}:")
         for sentence in cluster_sentences[:10]:
