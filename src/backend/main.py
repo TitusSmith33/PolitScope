@@ -1,6 +1,7 @@
 """Communicate with frontend and driver of backend."""
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Any, Dict
 import pandas as pd
@@ -11,6 +12,14 @@ from analysis import analyze_embeddings
 from comparison import compare_clusters
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for testing; specify in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def load_and_combine_text(csv_file: str) -> Dict[str, Any]:
     """Load text data from a CSV file and combine all rows into a single text block."""
@@ -55,6 +64,7 @@ def analyze_text(data: TextInput) -> Dict[str, Any]:
         # compare the clusters up to model
         bias_result = compare_clusters(embeddings)
         # return dict of bias content
+        print(bias_result)
         return bias_result
     # error handling
     except Exception as e:

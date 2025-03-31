@@ -64,4 +64,4 @@ def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
         print(f"  → Distance Score: {distance_score:.2f}, Entropy Score: {normalized_entropy:.2f}")
         print(f"  → Confidence Score: {confidence_score:.2f} ({'CONFIDENT' if is_confident else 'LOW CONFIDENCE'})")
 
-        return {"biased_content": biased_sentences}
+        return {"bias_content": biased_sentences}
