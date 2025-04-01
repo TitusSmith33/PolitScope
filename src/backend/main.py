@@ -59,6 +59,7 @@ def analyze_text(data: TextInput) -> Dict[str, Any]:
     try:
         # prepare the data for embedding step
         clean_data = preprocess_text(data.dict())
+        print(clean_data)
         # embed the text from webpage
         embeddings = generate_embeddings(clean_data)
         # compare the clusters up to model

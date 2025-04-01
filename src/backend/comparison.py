@@ -35,11 +35,9 @@ def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
     # perform the distance calculations for center of clusters
     # reference: https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html
     distances = cdist(embeddings, cluster_centers, metric='euclidean')
-    print(distances)
+    #print(distances)
     closest_clusters = np.argmin(distances, axis=1)
     min_distances = np.min(distances, axis=1)
-    print("min_distance")
-    print(min_distances)
 
     biased_sentences = []
 
@@ -51,12 +49,14 @@ def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
         # normalize the entropy score from range (-1, 1) to (0, 1)
         # -1 -> 0
         # 1 -> 1
+        print(f"Entropy before normalization: {entropies[i]}")
         normalized_entropy = (entropies[i] + 1) / 2
 
-        confidence_score = (DISTANCE_WEIGHT * distance_score) + (ENTROPY_WEIGHT * (1 - normalized_entropy))
+        confidence_score = (DISTANCE_WEIGHT * distance_score) + (ENTROPY_WEIGHT * (1- normalized_entropy))
         is_confident = confidence_score >= CONFIDENCE_THRESHOLD
 
-        if cluster == 1 and is_confident:
+        #if cluster == 1 and is_confident:
+        if cluster == 1:
             biased_sentences.append(sentence["sentence"])
 
         print(f"\nSentence: {sentence['sentence']}")
@@ -64,4 +64,4 @@ def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
         print(f"  → Distance Score: {distance_score:.2f}, Entropy Score: {normalized_entropy:.2f}")
         print(f"  → Confidence Score: {confidence_score:.2f} ({'CONFIDENT' if is_confident else 'LOW CONFIDENCE'})")
 
-        return {"bias_content": biased_sentences}
+    return {"bias_content": biased_sentences}

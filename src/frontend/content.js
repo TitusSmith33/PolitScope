@@ -1,13 +1,20 @@
 async function extractText() {
-    let visibleText = "";
-    document.querySelectorAll("p, span, div").forEach(el => {
-        if (el.offsetParent !== null) { // Ensures only visible elements
-            visibleText += el.innerText + " ";
+    // Remove unnecessary sections before extracting text
+    const ignoreSections = ["header", "footer", "nav", ".sidebar", ".advertisement"];
+    document.querySelectorAll(ignoreSections.join(", ")).forEach(el => el.remove());
+
+    let mainText = "";
+    document.querySelectorAll("article, main, p").forEach(el => {
+        if (el.offsetParent !== null) {  // Ensure it's visible
+            let text = el.innerText.trim();
+            if (text.split(" ").length > 5) {  // Ignore very short text
+                mainText += text + " ";
+            }
         }
     });
 
-    const requestData = { content: visibleText.trim() };
-    
+    const requestData = { content: mainText.trim() };
+
     try {
         const response = await fetch("http://127.0.0.1:8000/analyze", {
             method: "POST",
@@ -23,14 +30,35 @@ async function extractText() {
     }
 }
 
-function highlightBias(sentences) {
-    document.querySelectorAll("p, span, div").forEach(el => {
+async function highlightBias(sentences) {
+    const similarity = await import('https://cdn.jsdelivr.net/npm/string-similarity@4.0.4/+esm');
+
+    document.querySelectorAll("article, main, p").forEach(el => {
+        let text = el.innerText.trim();
+        let textSentences = text.split('. ').map(s => s.trim());
+
         sentences.forEach(sentence => {
-            if (el.innerText.includes(sentence)) {
-                el.innerHTML = el.innerHTML.replace(sentence, `<span style="background-color: yellow; font-weight: bold;">${sentence}</span>`);
+            let bestMatch = similarity.findBestMatch(sentence, textSentences);
+            
+            if (bestMatch.bestMatch.rating > 0.2) {  // Lower threshold
+                let matchedSentence = bestMatch.bestMatch.target;
+
+                // Normalize both texts to prevent failed replacements
+                let normalizedText = el.innerHTML.replace(/\s+/g, " ").trim();
+                let normalizedMatch = matchedSentence.replace(/\s+/g, " ").trim();
+
+                if (normalizedText.includes(normalizedMatch)) {
+                    el.innerHTML = el.innerHTML.replace(
+                        normalizedMatch, 
+                        `<span style="background-color: yellow; font-weight: bold;">${normalizedMatch}</span>`
+                    );
+                } else {
+                    console.warn("Match not found in element text:", normalizedMatch);
+                }
             }
         });
     });
 }
+
 
 extractText();
