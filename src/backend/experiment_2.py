@@ -1,5 +1,6 @@
 import torch
 import matplotlib.pyplot as plt
+
 from text_processor import preprocess_text
 from embedding import generate_embeddings
 
@@ -73,6 +74,7 @@ def compute_distances(embedding1, embedding2):
 
 
 def word_experiment():
+    """Experimental design for testing parts of speech."""
     # Generate all sentences
     all_sentences = generate_sentences()
 
@@ -117,8 +119,6 @@ def word_experiment():
             different_noun.append((sentence, distance))
 
     # Create a bar chart for the average distances of each category
-
-    ##TODO:  ADD error lines
     categories = ['Same Subject', 'Different Subject', 'Same Adjective', 'Different Adjective', 'Same Noun', 'Different Noun']
     same_subject_distances = [dist for sentence, dist in same_subject]
     different_subject_distances = [dist for sentence, dist in different_subject]
@@ -137,7 +137,6 @@ def word_experiment():
 ]
     
     # Create the bar graph
-    ## plt.errorbar (x,y, stand error of mean)
     plt.figure(figsize=(10, 6))
     plt.bar(categories, avg_distances, color=['cyan', 'navy', 'lightcoral', 'darkred', 'lightgreen', 'seagreen'])
     plt.xlabel('Categories')
@@ -147,7 +146,7 @@ def word_experiment():
     plt.ylim(1.5, 2.75)
     plt.tight_layout()
 
-    # Show the plot
+    # save the plot
     plt.savefig("average_distances_bar_graph.png")
 
 # Run the experiment
