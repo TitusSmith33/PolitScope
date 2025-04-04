@@ -5,9 +5,9 @@ import numpy as np
 from typing import Dict, Any, List, Optional
 from scipy.spatial.distance import cdist
 
-CONFIDENCE_THRESHOLD = 0.85  
-DISTANCE_WEIGHT = 0.7  
-ENTROPY_WEIGHT = 0.3 
+CONFIDENCE_THRESHOLD = 0.60  
+DISTANCE_WEIGHT = 0.01  
+ENTROPY_WEIGHT = 0.99 
 
 def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
     """Compare new embeddings to the clusters in model."""
@@ -45,18 +45,23 @@ def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
     # confidence=0.7×(1−normalized distance)+0.3×(1− normalized entropy score)
     for i, sentence in enumerate(sentences):
         cluster = closest_clusters[i]
-        distance_score = 1 - (min_distances[i] / np.max(min_distances))
+        # closer to 0 -> closer to 1
+        # high distances -> closer to 0
+        distance_score = 1 / (1 + min_distances[i])
+
+        print(f"distance: {distances}")
         # normalize the entropy score from range (-1, 1) to (0, 1)
         # -1 -> 0
         # 1 -> 1
+        # 0 being high confidence, 1 being low
         print(f"Entropy before normalization: {entropies[i]}")
         normalized_entropy = (entropies[i] + 1) / 2
 
         confidence_score = (DISTANCE_WEIGHT * distance_score) + (ENTROPY_WEIGHT * (1- normalized_entropy))
         is_confident = confidence_score >= CONFIDENCE_THRESHOLD
 
-        #if cluster == 1 and is_confident:
-        if cluster == 1:
+        if cluster == 1 and is_confident:
+        #if cluster == 1:
             biased_sentences.append(sentence["sentence"])
 
         print(f"\nSentence: {sentence['sentence']}")
