@@ -1,13 +1,15 @@
 async function extractText() {
-    // Remove unnecessary sections before extracting text
+    // Sections to ignore during text extraction
     const ignoreSections = ["header", "footer", "nav", ".sidebar", ".advertisement"];
-    document.querySelectorAll(ignoreSections.join(", ")).forEach(el => el.remove());
 
     let mainText = "";
+
+    // Collect all paragraphs and visible text within main content areas
     document.querySelectorAll("article, main, p").forEach(el => {
-        if (el.offsetParent !== null) {  // Ensure it's visible
-            let text = el.innerText.trim();
-            if (text.split(" ").length > 5) {  // Ignore very short text
+        // Skip elements that are part of ignored sections
+        if (!el.closest(ignoreSections.join(", ")) && el.offsetParent !== null) {
+            const text = el.innerText.trim();
+            if (text.split(" ").length > 5) {
                 mainText += text + " ";
             }
         }
@@ -30,35 +32,47 @@ async function extractText() {
     }
 }
 
+// Highlighting biased sentences using TreeWalker for precise DOM manipulation
 async function highlightBias(sentences) {
     const similarity = await import('https://cdn.jsdelivr.net/npm/string-similarity@4.0.4/+esm');
 
-    document.querySelectorAll("article, main, p").forEach(el => {
-        let text = el.innerText.trim();
-        let textSentences = text.split('. ').map(s => s.trim());
-
-        sentences.forEach(sentence => {
-            let bestMatch = similarity.findBestMatch(sentence, textSentences);
-            
-            if (bestMatch.bestMatch.rating > 0.2) {  // Lower threshold
-                let matchedSentence = bestMatch.bestMatch.target;
-
-                // Normalize both texts to prevent failed replacements
-                let normalizedText = el.innerHTML.replace(/\s+/g, " ").trim();
-                let normalizedMatch = matchedSentence.replace(/\s+/g, " ").trim();
-
-                if (normalizedText.includes(normalizedMatch)) {
-                    el.innerHTML = el.innerHTML.replace(
-                        normalizedMatch, 
-                        `<span style="background-color: yellow; font-weight: bold;">${normalizedMatch}</span>`
-                    );
-                } else {
-                    console.warn("Match not found in element text:", normalizedMatch);
-                }
+    const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        {
+            acceptNode: (node) => {
+                // Filter out hidden or whitespace-only text nodes
+                if (!node.parentElement.offsetParent) return NodeFilter.FILTER_REJECT;
+                if (!node.textContent.trim()) return NodeFilter.FILTER_REJECT;
+                return NodeFilter.FILTER_ACCEPT;
             }
-        });
-    });
-}
+        }
+    );
 
+    const textNodes = [];
+    while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (!node.parentElement.closest("header, footer, nav, .sidebar, .advertisement")) {
+            textNodes.push(node);
+        }
+    }
+
+    for (const biasSentence of sentences) {
+        for (const node of textNodes) {
+            const text = node.textContent;
+            const match = similarity.findBestMatch(biasSentence, [text]).bestMatch;
+
+            if (match.rating > 0.1) {
+                const span = document.createElement("span");
+                span.style.backgroundColor = "yellow";
+                span.style.fontWeight = "bold";
+                span.textContent = text;
+
+                node.parentNode.replaceChild(span, node);
+                break; // Move to next bias sentence after a match
+            }
+        }
+    }
+}
 
 extractText();

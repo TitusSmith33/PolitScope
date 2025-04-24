@@ -5,9 +5,9 @@ import numpy as np
 from typing import Dict, Any, List, Optional
 from scipy.spatial.distance import cdist
 
-CONFIDENCE_THRESHOLD = 0.60  
-DISTANCE_WEIGHT = 0.01  
-ENTROPY_WEIGHT = 0.99 
+CONFIDENCE_THRESHOLD = 0.80  
+DISTANCE_WEIGHT = 0.1  
+ENTROPY_WEIGHT = 0.90
 
 def compare_clusters(data: Dict[str, Any]) -> Optional[Dict[str, List[str]]]:
     """Compare new embeddings to the clusters in model."""
