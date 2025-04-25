@@ -10,6 +10,7 @@ from embedding import generate_embeddings
 from text_processor import preprocess_text
 from analysis import analyze_embeddings
 from comparison import compare_clusters
+from mapping import find_similar_bias_sentences
 
 app = FastAPI()
 
@@ -65,8 +66,12 @@ def analyze_text(data: TextInput) -> Dict[str, Any]:
         # compare the clusters up to model
         bias_result = compare_clusters(embeddings)
         # return dict of bias content
-        print(bias_result)
-        return bias_result
+        #print(bias_result)
+        formatted_result = find_similar_bias_sentences(data.dict(), bias_result)
+        print(formatted_result)
+        print(type(formatted_result))
+        #return bias_result
+        return formatted_result
     # error handling
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
