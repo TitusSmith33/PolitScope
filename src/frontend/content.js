@@ -25,23 +25,19 @@ async function extractText() {
         });
 
         const result = await response.json();
-        highlightBias(result.bias_content);
         chrome.storage.local.set({ biasSentences: result.bias_content });
+        highlightBias(result.bias_content);
     } catch (error) {
         console.error("Error analyzing text:", error);
     }
 }
 
-// Highlighting biased sentences using TreeWalker for precise DOM manipulation
-async function highlightBias(sentences) {
-    const similarity = await import('https://cdn.jsdelivr.net/npm/string-similarity@4.0.4/+esm');
-
+function highlightBias(sentences) {
     const walker = document.createTreeWalker(
         document.body,
         NodeFilter.SHOW_TEXT,
         {
             acceptNode: (node) => {
-                // Filter out hidden or whitespace-only text nodes
                 if (!node.parentElement.offsetParent) return NodeFilter.FILTER_REJECT;
                 if (!node.textContent.trim()) return NodeFilter.FILTER_REJECT;
                 return NodeFilter.FILTER_ACCEPT;
@@ -57,19 +53,18 @@ async function highlightBias(sentences) {
         }
     }
 
-    for (const biasSentence of sentences) {
+    for (const sentence of sentences) {
+        if (!sentence.trim()) continue;
+
         for (const node of textNodes) {
             const text = node.textContent;
-            const match = similarity.findBestMatch(biasSentence, [text]).bestMatch;
+            if (text.includes(sentence)) {
+                const highlightedHTML = text.replaceAll(sentence, `<span style="background-color: yellow; font-weight: bold;">${sentence}</span>`);
+                const spanWrapper = document.createElement("span");
+                spanWrapper.innerHTML = highlightedHTML;
 
-            if (match.rating > 0.1) {
-                const span = document.createElement("span");
-                span.style.backgroundColor = "yellow";
-                span.style.fontWeight = "bold";
-                span.textContent = text;
-
-                node.parentNode.replaceChild(span, node);
-                break; // Move to next bias sentence after a match
+                node.parentNode.replaceChild(spanWrapper, node);
+                break;
             }
         }
     }
